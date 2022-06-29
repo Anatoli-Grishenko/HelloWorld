@@ -26,7 +26,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
     
     @Override
     public void setup() {
-//        this.enableDeepLARVAMonitoring();
+        this.enableDeepLARVAMonitoring();
         super.setup();
         logger.onTabular();
         myStatus=Status.START;
