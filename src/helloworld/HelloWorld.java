@@ -7,8 +7,8 @@ public class HelloWorld {
 
     public static void main(String[] args) {
         LARVABoot boot = new LARVABoot();
-        boot.Boot("localhost", 1099);
-        boot.loadAgent("Smith", AgentLARVAFull.class);
+        boot.Boot("150.214.190.126", 1099);
+        boot.launchAgent("Smith", AgentLARVA.class);
         boot.WaitToShutDown();
     }
     

@@ -7,14 +7,13 @@ public class AgentLARVA extends LARVAFirstAgent{
     @Override
     public void setup() {
         super.setup();
+        logger.onTabular();
         Info("Configuring...");        
     }
     
     @Override
     public void Execute () {
         Info("Executing..");
-        this.doLARVACheckin();
-        this.doLARVACheckout();
         doExit();        
     }
     
