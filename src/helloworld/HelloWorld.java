@@ -7,7 +7,7 @@ public class HelloWorld {
 
     public static void main(String[] args) {
         // Basic JADE boot (console)
-//        JADEBoot boot=new JADEBoot();
+        JADEBoot boot=new JADEBoot();
         // LARVA boot (GUI-based)
 //        LARVABoot boot = new LARVABoot();
         
