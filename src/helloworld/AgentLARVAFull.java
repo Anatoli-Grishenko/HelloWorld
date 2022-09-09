@@ -87,13 +87,18 @@ public class AgentLARVAFull extends LARVAFirstAgent {
     @Override
     public void takeDown() {
         Info("Taking down...");
+        // Save the Sequence Diagram
         this.saveSequenceDiagram("./" + getLocalName() + ".seqd");
         super.takeDown();
     }
 
     public Status MyCheckin() {
         Info("Loading passport and checking-in to LARVA");
+        // It loads the passport specified in the GUI, but otherwise
+        // it might load any other passpor manually (uncomment)
         //this.loadMyPassport("config/ANATOLI_GRISHENKO.passport");
+        
+        // If checkin works, then continue, else exti
         if (!doLARVACheckin()) {
             Error("Unable to checkin");
             return Status.EXIT;
@@ -107,19 +112,24 @@ public class AgentLARVAFull extends LARVAFirstAgent {
     }
 
     public Status MyOpenProblem() {
-
+        // Look i the DF who is in charge of service PMANAGER
         if (this.DFGetAllProvidersOf(service).isEmpty()) {
             Error("Service PMANAGER is down");
             return Status.CHECKOUT;
         }
         problemManager = this.DFGetAllProvidersOf(service).get(0);
         Info("Found problem manager " + problemManager);
+        
+        // Send it a message to open a problem instance
         this.outbox = new ACLMessage();
         outbox.setSender(getAID());
         outbox.addReceiver(new AID(problemManager, AID.ISLOCALNAME));
         outbox.setContent("Request open " + problem);
         this.LARVAsend(outbox);
         Info("Request opening problem " + problem + " to " + problemManager);
+        
+        // There will be arriving two messages, one coming from the
+        // Problem Manager and the other from the brand new Session Manager
         open = LARVAblockingReceive();
         Info(problemManager + " says: " + open.getContent());
         content = open.getContent();
@@ -137,10 +147,13 @@ public class AgentLARVAFull extends LARVAFirstAgent {
     }
 
     public Status MySolveProblem() {
+        // Nothig to do here (yet!)
         return Status.CLOSEPROBLEM;
     }
 
     public Status MyCloseProblem() {
+        // AFter all, it is mandatory closing the problem
+        // by replying to the backup message
         outbox = open.createReply();
         outbox.setContent("Cancel session " + sessionKey);
         Info("Closing problem Helloworld, session " + sessionKey);
