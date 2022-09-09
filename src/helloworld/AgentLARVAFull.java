@@ -15,31 +15,54 @@ import jade.lang.acl.ACLMessage;
  */
 public class AgentLARVAFull extends LARVAFirstAgent {
 
+    // The execution on any agent might be seen as a finite state automaton
+    // whose states are these
     enum Status {
-        START, CHECKIN, CHECKOUT, OPENPROBLEM, CLOSEPROBLEM, SOLVEPROBLEM, EXIT
+        START, // Begin execution
+        CHECKIN, // Send passport to Identity Manager
+        OPENPROBLEM, // ASks Problem Manager to open an instance of a problem
+        SOLVEPROBLEM, // Really do this!
+        CLOSEPROBLEM, // After that, ask Problem Manager to close the problem
+        CHECKOUT, // ASk Identity Manager to leave out
+        EXIT
     }
-    Status myStatus;
-    String service = "PMANAGER", problem = "HelloWorld",
-            problemManager = "", content, sessionKey, sessionManager;
-    ACLMessage open, session;
-    String[] contentTokens;
-    
+    Status myStatus;    // The current state
+    String service = "PMANAGER", // How to find Problem Manager in DF
+            problem = "HelloWorld", // Name of the problem to solve
+            problemManager = "", // Name of the Problem Manager, when it woudl be knwon
+            sessionManager, // Same for the Session Manager
+            content, // Content of messages
+            sessionKey; // The key for each work session 
+    ACLMessage open, session; // Backup of relevant messages
+    String[] contentTokens; // To parse the content
+
     @Override
     public void setup() {
+        // Deep monitoring of the execution of each agent. It is a kind of
+        // guardrail only for small problems. In large projects it is preferrable
+        // comment it since it consumes many messages and time
         this.enableDeepLARVAMonitoring();
+        // The constructor of the superclass
         super.setup();
+        // ACtivates a tabular-like output of agents
         logger.onTabular();
-        myStatus=Status.START;
+        // First status
+        myStatus = Status.START;
     }
-   
+
+    // Main execution body. It executes continuously until 
+    // the exac execution of doExit() after which it executes
+    // takeDown()
     @Override
     public void Execute() {
-         Info("Status: " + myStatus.name());
+        Info("Status: " + myStatus.name());
         switch (myStatus) {
             case START:
                 myStatus = Status.CHECKIN;
                 break;
             case CHECKIN:
+                // The execution of a state (as a method) returns
+                // the next state
                 myStatus = MyCheckin();
                 break;
             case OPENPROBLEM:
@@ -60,14 +83,14 @@ public class AgentLARVAFull extends LARVAFirstAgent {
                 break;
         }
     }
-    
+
     @Override
-   public void takeDown() {
-       Info("Taking down...");
-       this.saveSequenceDiagram("./"+getLocalName()+".seqd");
-       super.takeDown();
-   }    
-    
+    public void takeDown() {
+        Info("Taking down...");
+        this.saveSequenceDiagram("./" + getLocalName() + ".seqd");
+        super.takeDown();
+    }
+
     public Status MyCheckin() {
         Info("Loading passport and checking-in to LARVA");
         //this.loadMyPassport("config/ANATOLI_GRISHENKO.passport");
@@ -84,7 +107,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
     }
 
     public Status MyOpenProblem() {
-        
+
         if (this.DFGetAllProvidersOf(service).isEmpty()) {
             Error("Service PMANAGER is down");
             return Status.CHECKOUT;
