@@ -7,7 +7,7 @@ public class HelloWorld {
 
     public static void main(String[] args) {
         // Basic JADE boot (console)
-        JADEBoot boot=new JADEBoot();
+//        JADEBoot boot=new JADEBoot();
         // LARVA boot (GUI-based)
 //        LARVABoot boot = new LARVABoot();
         
@@ -19,6 +19,8 @@ public class HelloWorld {
         
         // Create the agent and executes it
         boot.launchAgent("Smith", AgentJADE.class);
+//        boot.launchAgent("Smith", AgentLARVA.class);
+//        boot.launchAgent("Smith", AgentLARVAFull.class);
         
         // Closes the container and exits
         boot.WaitToShutDown();
