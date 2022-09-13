@@ -36,22 +36,38 @@ public class AgentLARVAFull extends LARVAFirstAgent {
     ACLMessage open, session; // Backup of relevant messages
     String[] contentTokens; // To parse the content
 
+    // This is the firs method executed by any agent, right before its creation
     @Override
     public void setup() {
         // Deep monitoring of the execution of each agent. It is a kind of
         // guardrail only for small problems. In large projects it is preferrable
         // comment it since it consumes many messages and time
+        // this must be called before the super.setup();
         this.enableDeepLARVAMonitoring();
+        
         // The constructor of the superclass
         super.setup();
+
+        // This feature allows the automatic generation of sequence diagrams for the running program
+        // It is very costly in terms of executoin time, so it must be used carefully in large problems
+        this.activateSequenceDiagrams();
+        //this.deactivateSequenceDiagrams();
+        
+        // This feature enables a logger of all the activity of the agent.
+        // When it is ON, all Info( ) messages are displayed on screen
+        // When it is OFF, it executes quietly, without showing any screen output
+        logger.onEcho();
+        //logger.offEcho();
+        
         // ACtivates a tabular-like output of agents
         logger.onTabular();
-        // First status
+                
+        // First status of execution
         myStatus = Status.START;
     }
 
-    // Main execution body. It executes continuously until 
-    // the exac execution of doExit() after which it executes
+    // Main execution body andter the executoin of setup( ). It executes continuously until 
+    // the exact execution of doExit() after which it executes
     // takeDown()
     @Override
     public void Execute() {
@@ -84,6 +100,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         }
     }
 
+    // It only executes when the agent dies programmatically, that is, under control
     @Override
     public void takeDown() {
         Info("Taking down...");
@@ -92,6 +109,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         super.takeDown();
     }
 
+    // It loads the passport selected in the GUI and send it to the Identity manager
     public Status MyCheckin() {
         Info("Loading passport and checking-in to LARVA");
         // It loads the passport specified in the GUI, but otherwise
@@ -106,6 +124,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         return Status.OPENPROBLEM;
     }
 
+    // Says good by to the Identity Manager and leaves LARVA
     public Status MyCheckout() {
         this.doLARVACheckout();
         return Status.EXIT;
