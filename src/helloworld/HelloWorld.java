@@ -2,6 +2,7 @@ package helloworld;
 
 import appboot.JADEBoot;
 import appboot.LARVABoot;
+import static crypto.Keygen.getHexaKey;
 
 public class HelloWorld {
 
@@ -22,7 +23,7 @@ public class HelloWorld {
         // boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
         
         // Create the agent and executes it
-        boot.launchAgent("Smith", AgentJADE.class);
+        boot.launchAgent("Smith"+getHexaKey(4), AgentJADE.class);
 
         // Closes the container and exits
         boot.WaitToShutDown();
@@ -36,7 +37,7 @@ public class HelloWorld {
         // Should JADE be running in local
         boot.Boot("localhost", 1099);
         // Otherwise our server always run JADE  ;-)
-        // boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
+//         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
         // boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
         
         // Create the agent and executes it
