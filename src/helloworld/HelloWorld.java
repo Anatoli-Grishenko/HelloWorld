@@ -23,7 +23,7 @@ public class HelloWorld {
         // boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
         
         // Create the agent and executes it
-        boot.launchAgent("Smith"+getHexaKey(4), AgentJADE.class);
+        boot.launchAgent("Smith-"+getHexaKey(4), AgentJADE.class);
 
         // Closes the container and exits
         boot.WaitToShutDown();
@@ -42,7 +42,7 @@ public class HelloWorld {
         
         // Create the agent and executes it
 //        boot.launchAgent("Smith", AgentLARVA.class);
-        boot.launchAgent("Smith", AgentLARVAFull.class);
+        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVAFull.class);
         
         // Closes the container and exits
         boot.WaitToShutDown();
