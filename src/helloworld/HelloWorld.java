@@ -17,9 +17,9 @@ public class HelloWorld {
         
         // Boot( ) creates a container for future agents
         // Should JADE be running in local
-        boot.Boot("localhost", 1099);
+//        boot.Boot("localhost", 1099);
         // Otherwise our server always run JADE  ;-)
-        // boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
+         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
         // boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
         
         // Create the agent and executes it
@@ -35,13 +35,14 @@ public class HelloWorld {
         
         // Boot( ) creates a container for future agents
         // Should JADE be running in local
-        boot.Boot("localhost", 1099);
+//        boot.Boot("localhost", 1099);
+//        boot.Boot("localhost", 1099);
         // Otherwise our server always run JADE  ;-)
-//         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
+         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
         // boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
         
         // Create the agent and executes it
-//        boot.launchAgent("Smith", AgentLARVA.class);
+//        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVA.class);
         boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVAFull.class);
         
         // Closes the container and exits
