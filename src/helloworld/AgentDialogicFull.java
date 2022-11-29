@@ -5,15 +5,17 @@
  */
 package helloworld;
 
+import agents.LARVADialogicalAgent;
 import agents.LARVAFirstAgent;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
+import java.util.ArrayList;
 
 /**
  *
  * @author Anatoli Grishenko <Anatoli.Grishenko@gmail.com>
  */
-public class AgentLARVAFull extends LARVAFirstAgent {
+public class AgentDialogicFull extends LARVADialogicalAgent {
 
     // The execution on any agent might be seen as a finite state automaton
     // whose states are these
@@ -34,6 +36,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
             content, // Content of messages
             sessionKey; // The key for each work session 
     protected ACLMessage open, session; // Backup of relevant messages
+    protected ArrayList<ACLMessage> inboxes; // Backup of relevant messages
     protected String[] contentTokens; // To parse the content
 
     // This is the firs method executed by any agent, right before its creation
@@ -140,22 +143,24 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         Info("Found problem manager " + problemManager);
         
         // Send it a message to open a problem instance
-        this.outbox = new ACLMessage();
+        this.outbox = new ACLMessage(ACLMessage.REQUEST);
         outbox.setSender(getAID());
         outbox.addReceiver(new AID(problemManager, AID.ISLOCALNAME));
         outbox.setContent("Request open " + problem);
-        this.LARVAsend(outbox);
-        Info("Request opening problem " + problem + " to " + problemManager);
-        
+        outbox.setConversationId(sessionKey);
+        outbox.setReplyWith(outbox.getContent());
+        open  = blockingDialogue(outbox).get(0);
+        Info("Request opening problem " + problem + " to " + problemManager);        
         // There will be arriving two messages, one coming from the
         // Problem Manager and the other from the brand new Session Manager
-        open = LARVAblockingReceive();
         Info(problemManager + " says: " + open.getContent());
         content = open.getContent();
         contentTokens = content.split(" ");
         if (contentTokens[0].toUpperCase().equals("AGREE")) {
             sessionKey = contentTokens[4];
-            session = LARVAblockingReceive();
+//            while (getInboundOpen().isEmpty());            
+//            session = getInboundOpen().get(0);
+            session = blockingDialogue().get(0);
             sessionManager = session.getSender().getLocalName();
             Info(sessionManager + " says: " + session.getContent());
             return Status.CLOSEPROBLEM;
@@ -174,11 +179,13 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         // AFter all, it is mandatory closing the problem
         // by replying to the backup message
         outbox = open.createReply();
+        outbox.setPerformative(ACLMessage.CANCEL);
         outbox.setContent("Cancel session " + sessionKey);
+        outbox.setConversationId(sessionKey);
+        outbox.setReplyWith(outbox.getContent());
         Info("Closing problem Helloworld, session " + sessionKey);
-        this.LARVAsend(outbox);
-        inbox = LARVAblockingReceive();
-        Info(problemManager + " says: " + inbox.getContent());
+        inboxes=blockingDialogue(outbox);
+        Info(problemManager + " says: " + inboxes.get(0).getContent());
         return Status.CHECKOUT;
     }
 
