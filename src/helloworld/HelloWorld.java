@@ -3,6 +3,7 @@ package helloworld;
 import appboot.JADEBoot;
 import appboot.LARVABoot;
 import static crypto.Keygen.getHexaKey;
+import swing.SwingTools;
 
 public class HelloWorld {
 
@@ -17,7 +18,7 @@ public class HelloWorld {
         
         // Boot( ) creates a container for future agents
         // Should JADE be running in local
-        boot.Boot("localhost", 1099);
+        boot.Boot(SwingTools.inputLine("Host"), 1099);
         // Otherwise our server always run JADE  ;-)
 //         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
 //         boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
@@ -37,7 +38,7 @@ public class HelloWorld {
         // Boot( ) creates a container for future agents
         // Should JADE be running in local
 //        boot.Boot("localhost", 1099);
-        boot.Boot("localhost", 1099);
+        boot.Boot(boot.inputLine("Host"), 1099);
         // Otherwise our server always run JADE  ;-)
 //         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
         // boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
@@ -45,7 +46,8 @@ public class HelloWorld {
         // Create the agent and executes it
 //        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVA.class);
 //        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVAFull.class);
-        boot.launchAgent("Smith-"+getHexaKey(4), AgentDialogicFull.class);
+//        boot.launchAgent("Smith-"+getHexaKey(4), AgentDialogicFull.class);
+        boot.launchAgent("StudentProfiler-"+getHexaKey(4), Profiler.class);
         
         // Closes the container and exits
         boot.WaitToShutDown();

@@ -8,12 +8,14 @@ package helloworld;
 import agents.LARVAFirstAgent;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
+import tools.Monitor;
+import tools.NetworkCookie;
 
 /**
  *
  * @author Anatoli Grishenko <Anatoli.Grishenko@gmail.com>
  */
-public class AgentLARVAFull extends LARVAFirstAgent {
+public class Profiler extends LARVAFirstAgent {
 
     // The execution on any agent might be seen as a finite state automaton
     // whose states are these
@@ -35,6 +37,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
             sessionKey; // The key for each work session 
     protected ACLMessage open, session; // Backup of relevant messages
     protected String[] contentTokens; // To parse the content
+    protected int latency;
 
     // This is the firs method executed by any agent, right before its creation
     @Override
@@ -43,29 +46,30 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         // guardrail only for small problems. In large projects it is preferrable
         // comment it since it consumes many messages and time
         // this must be called before the super.setup();
-        this.enableDeepLARVAMonitoring();
-        
+        this.disableDeepLARVAMonitoring();
+
         // The constructor of the superclass
         super.setup();
 
         // This feature allows the automatic generation of sequence diagrams for the running program
         // It is very costly in terms of executoin time, so it must be used carefully in large problems
-        this.activateSequenceDiagrams();
+        this.deactivateSequenceDiagrams();
         //this.deactivateSequenceDiagrams();
-        
+
         // This feature enables a logger of all the activity of the agent.
         // When it is ON, all Info( ) messages are displayed on screen
         // When it is OFF, it executes quietly, without showing any screen output
         logger.onEcho();
         //logger.offEcho();
-        
+
         // ACtivates a tabular-like output of agents
         logger.onTabular();
-                
+
         // First status of execution
         myStatus = Status.START;
-        
-        openRemote();
+
+//        openRemote();
+        activateProfiling();
     }
 
     // Main execution body andter the executoin of setup( ). It executes continuously until 
@@ -113,74 +117,80 @@ public class AgentLARVAFull extends LARVAFirstAgent {
 
     // It loads the passport selected in the GUI and send it to the Identity manager
     public Status MyCheckin() {
-        Info("Loading passport and checking-in to LARVA");
-        // It loads the passport specified in the GUI, but otherwise
-        // it might load any other passpor manually (uncomment)
-        //this.loadMyPassport("config/ANATOLI_GRISHENKO.passport");
-        
-        // If checkin works, then continue, else exti
-        if (!doLARVACheckin()) {
-            Error("Unable to checkin");
-            return Status.EXIT;
-        }
         return Status.OPENPROBLEM;
     }
 
     // Says good by to the Identity Manager and leaves LARVA
     public Status MyCheckout() {
-        this.doLARVACheckout();
         return Status.EXIT;
     }
 
     public Status MyOpenProblem() {
-        // Look i the DF who is in charge of service PMANAGER
-        if (this.DFGetAllProvidersOf(service).isEmpty()) {
-            Error("Service PMANAGER is down");
-            return Status.CHECKOUT;
-        }
-        problemManager = this.DFGetAllProvidersOf(service).get(0);
-        Info("Found problem manager " + problemManager);
-        
-        // Send it a message to open a problem instance
-        this.outbox = new ACLMessage();
-        outbox.setSender(getAID());
-        outbox.addReceiver(new AID(problemManager, AID.ISLOCALNAME));
-        outbox.setContent("Request open " + problem);
-        this.LARVAsend(outbox);
-        Info("Request opening problem " + problem + " to " + problemManager);
-        
-        // There will be arriving two messages, one coming from the
-        // Problem Manager and the other from the brand new Session Manager
-        open = LARVAblockingReceive();
-        Info(problemManager + " says: " + open.getContent());
-        content = open.getContent();
-        contentTokens = content.split(" ");
-        if (contentTokens[0].toUpperCase().equals("AGREE")) {
-            sessionKey = contentTokens[4];
-            session = LARVAblockingReceive();
-            sessionManager = session.getSender().getLocalName();
-            Info(sessionManager + " says: " + session.getContent());
-            return Status.CLOSEPROBLEM;
-        } else {
-            Error(content);
-            return Status.CHECKOUT;
-        }
+        outbox = null;
+        return Status.SOLVEPROBLEM;
     }
 
     public Status MySolveProblem() {
-        // Nothig to do here (yet!)
+        if (Confirm("Go onto Test 1/2?")) {
+            test1();
+        }
+        if (Confirm("Go onto Test 2/2?")) {
+            test2();
+        }
+        Message("End of profiling. Thank you!");
         return Status.CLOSEPROBLEM;
     }
 
-    public Status MyCloseProblem() {
-        // AFter all, it is mandatory closing the problem
-        // by replying to the backup message
-        outbox = open.createReply();
-        outbox.setContent("Cancel session " + sessionKey);
-        Info("Closing problem Helloworld, session " + sessionKey);
-        this.LARVAsend(outbox);
+    public void test1() {
+        if (outbox == null) {
+            outbox = new ACLMessage(ACLMessage.SUBSCRIBE);
+            outbox.setSender(getAID());
+            outbox.addReceiver(new AID(netMon, AID.ISLOCALNAME));
+            outbox.setContent("");
+            LARVAsend(outbox);
+            logger.offEcho();
+            setProfileDescription("loggerOff");
+        }
         inbox = LARVAblockingReceive();
-        Info(problemManager + " says: " + inbox.getContent());
+        while (inbox.getPerformative() != ACLMessage.CANCEL) {
+            if (inbox.getPerformative() == ACLMessage.QUERY_REF) {
+                if (lastCookie != null) {
+                    System.out.println("Received " + lastCookie.getSize() + " bytes "
+                            + (lastCookie.isZipped() ? " Zipped (" + lastCookie.getRealSize() + " bytes" : "")
+                            + " latency " + lastCookie.getLatency() + " ms");
+                }
+            }
+            inbox = LARVAblockingReceive();
+        }
+        outbox = null;
+        logger.onEcho();
+    }
+
+    public void test2() {
+        if (outbox == null) {
+            outbox = new ACLMessage(ACLMessage.SUBSCRIBE);
+            outbox.setSender(getAID());
+            outbox.addReceiver(new AID(netMon, AID.ISLOCALNAME));
+            outbox.setContent("");
+            LARVAsend(outbox);
+            logger.onEcho();
+            setProfileDescription("loggerOn");
+        }
+        inbox = LARVAblockingReceive();
+        while (inbox.getPerformative() != ACLMessage.CANCEL) {
+            if (inbox.getPerformative() == ACLMessage.QUERY_REF) {
+                if (lastCookie != null) {
+                    Info("Received " + lastCookie.getSize() + " bytes "
+                            + (lastCookie.isZipped() ? " Zipped (" + lastCookie.getRealSize() + " bytes" : "")
+                            + " latency " + lastCookie.getLatency() + " ms");
+                }
+            }
+            inbox = LARVAblockingReceive();
+        }
+        outbox = null;
+    }
+
+    public Status MyCloseProblem() {
         return Status.CHECKOUT;
     }
 

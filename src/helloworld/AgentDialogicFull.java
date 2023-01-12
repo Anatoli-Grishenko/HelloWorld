@@ -149,7 +149,7 @@ public class AgentDialogicFull extends LARVADialogicalAgent {
         outbox.setContent("Request open " + problem);
         outbox.setConversationId(sessionKey);
         outbox.setReplyWith(outbox.getContent());
-        open  = blockingDialogue(outbox).get(0);
+        open  = blockingDialogue(outbox).get(0);                    ///>>>>>>>>>>>>>>>>>>>>>>>
         Info("Request opening problem " + problem + " to " + problemManager);        
         // There will be arriving two messages, one coming from the
         // Problem Manager and the other from the brand new Session Manager
@@ -158,9 +158,7 @@ public class AgentDialogicFull extends LARVADialogicalAgent {
         contentTokens = content.split(" ");
         if (contentTokens[0].toUpperCase().equals("AGREE")) {
             sessionKey = contentTokens[4];
-//            while (getInboundOpen().isEmpty());            
-//            session = getInboundOpen().get(0);
-            session = blockingDialogue().get(0);
+            session = blockingDialogue().get(0);                    ///>>>>>>>>>>>>>>>>>>>>>>>
             sessionManager = session.getSender().getLocalName();
             Info(sessionManager + " says: " + session.getContent());
             return Status.CLOSEPROBLEM;
@@ -184,7 +182,7 @@ public class AgentDialogicFull extends LARVADialogicalAgent {
         outbox.setConversationId(sessionKey);
         outbox.setReplyWith(outbox.getContent());
         Info("Closing problem Helloworld, session " + sessionKey);
-        inboxes=blockingDialogue(outbox);
+        inboxes=blockingDialogue(outbox);                           ///>>>>>>>>>>>>>>>>>>>>>>>
         Info(problemManager + " says: " + inboxes.get(0).getContent());
         return Status.CHECKOUT;
     }
