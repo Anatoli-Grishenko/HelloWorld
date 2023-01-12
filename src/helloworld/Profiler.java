@@ -69,7 +69,7 @@ public class Profiler extends LARVAFirstAgent {
         myStatus = Status.START;
 
 //        openRemote();
-        activateProfiling();
+        activateProfiling("PLAINNETMON");
     }
 
     // Main execution body andter the executoin of setup( ). It executes continuously until 
