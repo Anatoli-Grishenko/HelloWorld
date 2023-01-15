@@ -147,6 +147,7 @@ public class Profiler extends LARVAFirstAgent {
             outbox.setSender(getAID());
             outbox.addReceiver(new AID(netMon, AID.ISLOCALNAME));
             outbox.setContent("");
+            outbox=Monitor.hideSubscribe(outbox, nap);
             LARVAsend(outbox);
             logger.offEcho();
             setProfileDescription("loggerOff");
