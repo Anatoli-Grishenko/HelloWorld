@@ -47,7 +47,7 @@ public class HelloWorld {
 //        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVA.class);
 //        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVAFull.class);
 //        boot.launchAgent("Smith-"+getHexaKey(4), AgentDialogicFull.class);
-        boot.launchAgent("StudentProfiler-"+getHexaKey(4), Profiler.class);
+        boot.launchAgent("StudentProfiler", AgentProfiler.class);
         
         // Closes the container and exits
         boot.WaitToShutDown();

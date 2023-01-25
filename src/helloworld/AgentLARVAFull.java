@@ -21,7 +21,8 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         START, // Begin execution
         CHECKIN, // Send passport to Identity Manager
         OPENPROBLEM, // ASks Problem Manager to open an instance of a problem
-        SOLVEPROBLEM, // Really do this!
+        JOINSESSION, // Enter the instance of the problem
+        SOLVEPROBLEM, // Solve the instance of the problem
         CLOSEPROBLEM, // After that, ask Problem Manager to close the problem
         CHECKOUT, // ASk Identity Manager to leave out
         EXIT
@@ -85,6 +86,9 @@ public class AgentLARVAFull extends LARVAFirstAgent {
                 break;
             case OPENPROBLEM:
                 myStatus = MyOpenProblem();
+                break;
+            case JOINSESSION:
+                myStatus = MyJoinSession();
                 break;
             case SOLVEPROBLEM:
                 myStatus = MySolveProblem();
@@ -160,11 +164,16 @@ public class AgentLARVAFull extends LARVAFirstAgent {
             session = LARVAblockingReceive();
             sessionManager = session.getSender().getLocalName();
             Info(sessionManager + " says: " + session.getContent());
-            return Status.CLOSEPROBLEM;
+            return Status.JOINSESSION;
         } else {
             Error(content);
             return Status.CHECKOUT;
         }
+    }
+
+    public Status MyJoinSession() {
+        // Nothig to do here (yet!)
+        return Status.SOLVEPROBLEM;
     }
 
     public Status MySolveProblem() {
@@ -175,7 +184,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
     public Status MyCloseProblem() {
         // AFter all, it is mandatory closing the problem
         // by replying to the backup message
-        outbox = open.createReply();
+        outbox = LARVAcreateReply(open);
         outbox.setContent("Cancel session " + sessionKey);
         Info("Closing problem Helloworld, session " + sessionKey);
         this.LARVAsend(outbox);
