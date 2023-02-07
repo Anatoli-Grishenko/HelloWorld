@@ -34,11 +34,11 @@ public class AgentIncrementalProfiler extends AgentLARVAFull {
         deactivateSequenceDiagrams();
         logger.offEcho();
         closeRemote();
-        if (DFGetAllProvidersOf(service).isEmpty()) {
+        if (LARVADFGetAllProvidersOf(service).isEmpty()) {
             Alert("Service " + service + " not found");
             doDelete();
         } else {
-            myNetworkMonitor = DFGetAllProvidersOf(service).get(0);
+            myNetworkMonitor = LARVADFGetAllProvidersOf(service).get(0);
             aidNetMon = new AID(myNetworkMonitor, AID.ISLOCALNAME);
         }
         activateMyCPUProfiler(getLocalName()+"-CPU");

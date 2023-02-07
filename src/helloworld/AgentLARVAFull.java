@@ -138,11 +138,11 @@ public class AgentLARVAFull extends LARVAFirstAgent {
 
     public Status MyOpenProblem() {
         // Look i the DF who is in charge of service PMANAGER
-        if (this.DFGetAllProvidersOf(service).isEmpty()) {
+        if (this.LARVADFGetAllProvidersOf(service).isEmpty()) {
             Error("Service PMANAGER is down");
             return Status.CHECKOUT;
         }
-        problemManager = this.DFGetAllProvidersOf(service).get(0);
+        problemManager = this.LARVADFGetAllProvidersOf(service).get(0);
         Info("Found problem manager " + problemManager);
         
         // Send it a message to open a problem instance
