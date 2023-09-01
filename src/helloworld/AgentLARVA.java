@@ -7,6 +7,7 @@ public class AgentLARVA extends LARVAFirstAgent{
     @Override
     public void setup() {
         super.setup();
+        Message("Hello my name is "+this.getLocalName());        
         logger.onTabular();
         Info("Configuring...");        
     }

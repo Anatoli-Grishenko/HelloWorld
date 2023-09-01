@@ -8,22 +8,21 @@ import swing.SwingTools;
 public class HelloWorld {
 
     public static void main(String[] args) {
-//        bootJADE();
-        bootLARVA();
+//        bootJADE(); 
+        bootLARVA(); 
     }
 
     public static void bootJADE() {
         // Basic JADE boot (console)
-        JADEBoot boot = new JADEBoot();
+        JADEBoot boot = new JADEBoot(); 
+        String hostname=SwingTools.inputSelect("Select host", new String[]{"localhost","isg2.ugr.es","150.214.190.126"}, "isg2.ugr.es");
 
         // Boot( ) creates a container for future agents
-        // Should JADE be running in local
-        boot.Boot(SwingTools.inputLine("Host"), 1099);
-        // Otherwise our server always run JADE  ;-)
-//         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
-//         boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
+        boot.Boot(hostname, 1099);
 
-        // Create the agent and executes it
+        // Create the agent and executes it. 
+        // (Version 1) It adds a random suffix to the name to avoid duplicate name clash. 
+        // It is a pure, emnpty JADE Agent      
         boot.launchAgent("Smith-" + getHexaKey(4), AgentJADE.class);
 
         // Closes the container and exits
@@ -34,23 +33,20 @@ public class HelloWorld {
     public static void bootLARVA() {
         // LARVA boot (GUI-based)
         LARVABoot boot = new LARVABoot();
-        int nProfilers = 8;
+        String hostname=SwingTools.inputSelect("Select host", new String[]{"localhost","isg2.ugr.es","150.214.190.126"}, "isg2.ugr.es");
+        
         // Boot( ) creates a container for future agents
-        // Should JADE be running in local
-//        boot.Boot("localhost", 1099);
-//        boot.Boot(boot.inputLine("Host"), 1099);
-        boot.Boot(SwingTools.inputSelect("Please select sever", new String[]{"localhost", "isg2.ugr.es", ""}, ""), 1099);
-        // Otherwise our server always run JADE  ;-)
-//         boot.Boot("isg2.ugr.es", 1099);  // Our server is isg2
-        // boot.Boot("150.214.190.126", 1099);  // Should there be problems with DNS
+        boot.Boot(hostname, 1099);
 
-        // Create the agent and executes it
+        // Create the agent and executes it. Please uncomment to use
+        
+        // 1) This version does not require passport neither interacts with LARVA
 //        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVA.class);
-//        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVAFull.class);
-//        boot.launchAgent("Smith-"+getHexaKey(4), AgentDialogicFull.class);
-        for (int i = 0; i < nProfilers; i++) {
-            boot.launchAgent("SP" + i, AgentLinearProfiler.class);
-        }
+
+        // 2) This version requires passport, interacts with LARVA, acquire milestones
+        // and receive report from DBA Droid
+        // boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVAFull.class); 
+       
 
         // Closes the container and exits
         boot.WaitToShutDown();

@@ -48,6 +48,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         
         // The constructor of the superclass
         super.setup();
+        Message("Hello my name is "+this.getLocalName());        
 
         // This feature allows the automatic generation of sequence diagrams for the running program
         // It is very costly in terms of executoin time, so it must be used carefully in large problems
@@ -66,6 +67,7 @@ public class AgentLARVAFull extends LARVAFirstAgent {
         // First status of execution
         myStatus = Status.START;
         
+        // Open remote console for stet by step execution
         openRemote();
     }
 
