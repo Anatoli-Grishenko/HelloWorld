@@ -21,7 +21,6 @@ public class AgentLARVA extends LARVAFirstAgent{
     @Override
     public void takeDown() {
         Info("Taking down..");
-        this.saveSequenceDiagram("seq.seqd");
         super.takeDown();
     }
     

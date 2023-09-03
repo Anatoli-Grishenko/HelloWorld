@@ -8,14 +8,15 @@ import swing.SwingTools;
 public class HelloWorld {
 
     public static void main(String[] args) {
-//        bootJADE(); 
-        bootLARVA(); 
+        bootJADE(); 
+//        bootLARVA(); 
     }
 
     public static void bootJADE() {
         // Basic JADE boot (console)
         JADEBoot boot = new JADEBoot(); 
-        String hostname=SwingTools.inputSelect("Select host", new String[]{"localhost","isg2.ugr.es","150.214.190.126"}, "isg2.ugr.es");
+        String hostname = "isg2.ugr.es";
+                // boot.inputSelect("Select host", new String[]{"localhost","isg2.ugr.es","150.214.190.126"}, "isg2.ugr.es");
 
         // Boot( ) creates a container for future agents
         boot.Boot(hostname, 1099);
@@ -33,17 +34,18 @@ public class HelloWorld {
     public static void bootLARVA() {
         // LARVA boot (GUI-based)
         LARVABoot boot = new LARVABoot();
-        String hostname=SwingTools.inputSelect("Select host", new String[]{"localhost","isg2.ugr.es","150.214.190.126"}, "isg2.ugr.es");
+        String hostname= "isg2.ugr.es";
+                //boot.inputSelect("Select host", new String[]{"localhost","isg2.ugr.es","150.214.190.126"}, "isg2.ugr.es");
         
         // Boot( ) creates a container for future agents
         boot.Boot(hostname, 1099);
 
         // Create the agent and executes it. Please uncomment to use
         
-        // 1) This version does not require passport neither interacts with LARVA
-//        boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVA.class);
+        // (Version 2) This version does not require passport neither interacts with LARVA.
+        //boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVA.class);
 
-        // 2) This version requires passport, interacts with LARVA, acquire milestones
+        // (Version 3) This version requires passport, interacts with LARVA, acquire milestones
         // and receive report from DBA Droid
         // boot.launchAgent("Smith-"+getHexaKey(4), AgentLARVAFull.class); 
        
