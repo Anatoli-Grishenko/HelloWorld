@@ -1,14 +1,17 @@
 package helloworld;
 
 import jade.core.Agent;
-import swing.SwingTools;
 
 public class AgentJADE extends Agent {
     
     @Override
     public void setup(){
-        SwingTools.Message("Hello my name is "+this.getLocalName());        
+        System.out.println("Hello my name is "+this.getLocalName());
         doDelete();
     }
     
+    @Override
+    public void takeDown() {
+        System.out.println(this.getLocalName()+" says Goodbye!");        
+    }
 }
